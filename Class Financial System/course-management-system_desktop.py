@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
 import random
 import string
+import re
 from datetime import datetime, timedelta
 
 
@@ -23,6 +24,9 @@ class Student:
 
     def get_name(self):
         return self.__name
+    
+    def get_email(self):
+        return self.__email
 
     def get_registered_modules(self):
         return self.__registered_modules.copy()
@@ -182,6 +186,18 @@ class Instructor:
 
     def get_instructor_id(self):
         return self.__instructor_id
+
+    def get_name(self):
+        return self.__name
+
+    def get_email(self):
+        return self.__email
+
+    def get_expertise(self):
+        return self.__expertise
+
+    def get_manage_course(self):
+        return self.__manage_courses.copy()
 
     def create_course(self, title, description, category, price):
         course = Course(title, description, self.__instructor_id, category, price)
@@ -392,23 +408,64 @@ class GUI:
         
         # entry fields
         self.student_name_entry = ttk.Entry(frame, width=30)
-        self.student_email_entry = ttk.Entry(frame, width=30)
+        
+        # Placeholder
+        self.student_email_entry = tk.Entry(frame, width=30, font=('Arial', 11), fg='grey')
         self.student_name_entry.grid(row=0, column=1, padx=5, pady=5)
         self.student_email_entry.grid(row=1, column=1, padx=5, pady=5)
+        
+        # Email Placeholder   
+        self.email_placeholder = "example@domain.com"
+        self.student_email_entry.insert(0, self.email_placeholder)
+        
+        self.student_email_entry.bind("<FocusIn>", self.on_email_focus_in)
+        self.student_email_entry.bind("<FocusOut>", self.on_email_focus_out)
         
         # buttons
         ttk.Button(frame, text="Register Student", command=self.register_student).grid(row=2, column=0, columnspan=2, pady=15)
         ttk.Button(frame, text="View Student Profile", command=self.view_student_profile).grid(row=3, column=0, columnspan=2, pady=10)
 
+    def on_email_focus_in(self, event):
+        if self.student_email_entry.get() == self.email_placeholder:
+            self.student_email_entry.delete(0, tk.END)
+            self.student_email_entry.config(fg='black')
+
+    def on_email_focus_out(self, event):
+        if not self.student_email_entry.get():
+            self.student_email_entry.insert(0, self.email_placeholder)
+            self.student_email_entry.config(fg='grey')
+            
+    def validate_email(self, email):
+        pattern = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+        return re.match(pattern, email) is not None
+
     def register_student(self):
-        name = self.student_name_entry.get()
-        email = self.student_email_entry.get()
+        name = self.student_name_entry.get().strip()
+        email = self.student_email_entry.get().strip()
+
+        if not name:
+            messagebox.showerror("Error", "Please enter your name!")
+            return
+
+        if not email or email == self.email_placeholder:
+            messagebox.showerror("Error", "Please enter your email!")
+            return
+
+        if not self.validate_email(email):
+            messagebox.showerror("Invalid Email", "Please enter a valid email address.\nExample: example@domain.com")
+            return
+
         try:
             student = self.manager.register_student(name, email)
             msg = f"Student registered with ID: {student.get_student_id()}"
             messagebox.showinfo("Success", msg)
+
             self.student_name_entry.delete(0, tk.END)
+
             self.student_email_entry.delete(0, tk.END)
+            self.student_email_entry.insert(0, self.email_placeholder)
+            self.student_email_entry.config(fg='grey')
+
         except Exception as e:
             messagebox.showerror("Error", str(e))
             
@@ -436,25 +493,49 @@ class GUI:
         ttk.Label(frame, text="Expertise:").grid(row=2, column=0, sticky='e', padx=5, pady=5)
         
         self.instructor_name_entry = ttk.Entry(frame, width=30)
-        self.instructor_email_entry = ttk.Entry(frame, width=30)
+        self.instructor_email_entry = tk.Entry(frame, width=30, font=('Arial', 11), fg='grey')
         self.instructor_expertise_entry = ttk.Entry(frame, width=30)
-        
+            
         self.instructor_name_entry.grid(row=0, column=1, padx=5, pady=5)
         self.instructor_email_entry.grid(row=1, column=1, padx=5, pady=5)
         self.instructor_expertise_entry.grid(row=2, column=1, padx=5, pady=5)
         
+        self.instructor_email_placeholder = "example@domain.com"
+        self.instructor_email_entry.insert(0, self.instructor_email_placeholder)
+        self.instructor_email_entry.bind("<FocusIn>", self.on_instructor_email_focus_in)
+        self.instructor_email_entry.bind("<FocusOut>", self.on_instructor_email_focus_out)
+                
         ttk.Button(frame, text="Register Instructor", command=self.register_instructor).grid(row=3, column=0, columnspan=2, pady=15)
         ttk.Button(frame, text="View Instructor Profile", command=self.view_instructor_profile).grid(row=4, column=0, columnspan=2, pady=10)
+    
+    def on_instructor_email_focus_in(self, event):
+        if self.instructor_email_entry.get() == self.instructor_email_placeholder:
+            self.instructor_email_entry.delete(0, tk.END)
+            self.instructor_email_entry.config(fg='black')
 
+    def on_instructor_email_focus_out(self, event):
+        if not self.instructor_email_entry.get():
+            self.instructor_email_entry.insert(0, self.instructor_email_placeholder)
+            self.instructor_email_entry.config(fg='grey')
+        
     def register_instructor(self):
-        name = self.instructor_name_entry.get()
-        email = self.instructor_email_entry.get()
-        expertise = self.instructor_expertise_entry.get()
+        name = self.instructor_name_entry.get().strip()
+        email = self.instructor_email_entry.get().strip()
+        expertise = self.instructor_expertise_entry.get().strip()
+        
+        if not name or not email or not expertise or email == self.instructor_email_placeholder:
+            messagebox.showerror("Error", "Fill all fields")
+            return
+        elif not re.match(r"^[\w\.-]+@[\w\.-]+\.\w+$", email):
+            messagebox.showerror("Error", "(Ex: example@domain.com)")
+            return
         try:
             instructor = self.manager.register_instructor(name, email, expertise)
             messagebox.showinfo("Successful", f"Instructor registered with ID: {instructor.get_instructor_id()}")
             self.instructor_name_entry.delete(0, tk.END)
             self.instructor_email_entry.delete(0, tk.END)
+            self.instructor_email_entry.insert(0, self.instructor_email_placeholder)
+            self.instructor_email_entry.config(fg='grey')
             self.instructor_expertise_entry.delete(0, tk.END)
         except Exception as e:
             messagebox.showerror("Error", str(e))
