@@ -1,0 +1,37 @@
+{
+    "user_documents": {
+        "103202532": [
+            {
+                "document_id": "17f0a607-337e-451b-b994-d3f1f24fed43",
+                "file_name": "New Microsoft Word Document_26.docx"
+            },
+            {
+                "document_id": "8e6361af-c153-4311-9970-2844206fd613",
+                "file_name": "A_review_of_anomaly_detection_techniques_in_advanced_metering__8.pdf"
+            },
+            {
+                "document_id": "22d19b92-ebc3-449a-a85f-9911de8b45a7",
+                "file_name": "New Microsoft Word Document_27.docx"
+            },
+            {
+                "document_id": "01bcf4f9-4abf-4929-a2b3-b7124004f9bb",
+                "file_name": "New Microsoft Word Document_28.docx"
+            },
+            {
+                "document_id": "0cc5fd0a-a65c-4c0e-aa58-07a28c579109",
+                "file_name": "New Microsoft Word Document_32.docx"
+            },
+            {
+                "document_id": "48cea7c9-fd2a-4edf-ace3-d666e7631f13",
+                "file_name": "A_review_of_anomaly_detection_techniques_in_advanced_metering__9.pdf"
+            },
+            {
+                "document_id": "54ea7f11-c178-479d-acdf-0893bb63d220",
+                "file_name": "New Microsoft Word Document_33.docx"
+            }
+        ]
+    },
+    "active_documents": {
+        "103202532": "54ea7f11-c178-479d-acdf-0893bb63d220"
+    }
+}

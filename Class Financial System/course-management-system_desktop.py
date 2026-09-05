@@ -845,7 +845,7 @@ class GUI:
         messagebox.showinfo("Logout", "Admin logged out successfully")
 
     def run(self):
-        self.window.mainloop()
+        self.window.mainloop()a
 
 
 
