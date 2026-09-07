@@ -7,4 +7,4 @@ load_dotenv()
 class Settings:
     TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
     LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")
-    WEBAPP_URL = "http://localhost:8000/"
+    WEBAPP_URL = "https://vahid-datahub.github.io/Python-Applications/"
